@@ -1,5 +1,5 @@
 const User = require('../../db/index');
-const {secret} = require('config');
+const { secret } = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -15,16 +15,15 @@ module.exports.createNewUsers = async (req, res) => {
 	if (req.body.hasOwnProperty('login') &&
 			req.body.hasOwnProperty('password')
 	) {
-		const {login, password} = req.body;
+		const { login, password } = req.body;
 		const candidate = await User.findOne({ login });
 		if (candidate) {
-			return res.status(400).json({message: 'такой пользователь уже зарегистрирован'});
-		}
-		else {
+			return res.status(400).json({message: 'user is already reserved'});
+		} else {
 			const salt = bcrypt.genSaltSync(10);
 			
 			const passwordToSave = bcrypt.hashSync(password, salt);
-			const obj = {login: login, password: passwordToSave};
+			const obj = { login: login, password: passwordToSave };
 			const user = new User(obj);
 	
 			user.save().then(result => {
@@ -35,7 +34,6 @@ module.exports.createNewUsers = async (req, res) => {
 				});
 			});
 		}
-			
 	}	else {
 			res.status(402).send('error in post');
 		}
