@@ -54,7 +54,7 @@ module.exports.getUser = (req, res) => {
 					const { login, _id } = result;
 					const token = generateToken(_id, login);
 					res.status(200).send({
-						data: { login, _id, token },
+						data: { login, token },
 					});
 			} else {
 				return res.status(400).send('error');
