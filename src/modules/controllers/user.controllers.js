@@ -1,4 +1,5 @@
 const User = require('../../db/index');
+const Visit = require('../../db/indVisit');
 const { secret } = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -61,4 +62,62 @@ module.exports.getUser = (req, res) => {
 			}
 		});
 	}
+}
+
+module.exports.createNewVisit = (req, res) => {
+  const visit = new Visit(req.body);
+	if (req.body.hasOwnProperty('name') &&
+			req.body.hasOwnProperty('complaint')
+	) {
+		visit.save().then(result => {
+			Visit.find().then((result) => {
+				res.send({
+					data: result,
+				});
+			});
+		});
+	}	else {
+			res.status(402).send('error in post');
+		}
+}
+
+module.exports.getAllVisits = (req, res) => {
+  Visit.find().then((result) => {
+    res.send({
+      data: result,
+    });
+  });
+}
+
+module.exports.deleteVisit = (req, res) => {
+	if (req.query._id) {
+		Visit.deleteOne({_id: req.query._id}).then(result => {
+			Visit.find().then((result) => {
+				res.send({
+					data: result,
+				});
+			});
+		});
+	} else {
+		res.status(402).send('error in delete');
+	}
+}
+
+module.exports.changeVisit = (req, res) => {
+	if (req.body.hasOwnProperty('name') &&
+			req.body.hasOwnProperty('doctor') &&
+			req.body.hasOwnProperty('_id')
+	) {
+		Visit.updateOne(
+			{_id: req.body._id}, req.body).then((result) => {
+				Visit.find().then((result) => {
+					res.send({
+						data: result,
+					});
+				});
+			}
+		);
+	}	else {
+			res.status(402).send('error in patch');
+		}
 }
