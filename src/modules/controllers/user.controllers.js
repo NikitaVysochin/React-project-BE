@@ -86,15 +86,15 @@ module.exports.createNewVisit = (req, res) => {
 
 module.exports.getAllVisits = (req, res) => {
 	const { token } = req.headers;
-	
-	if(!token) {
+
+	if (!token) {
 		return res.status(402).send('error in post');
 	}
 	const IdUser = jwt.verify(token, secret).id;
-	if(!IdUser){
+	if (!IdUser) {
 		return res.status(401).send('error in post');
 	}
-  Visit.find({id_user: IdUser}, {id_user:0}).then((result) => {
+  Visit.find({ id_user: IdUser }, { id_user:0 }).then((result) => {
     res.send({
       data: result,
     });
@@ -124,16 +124,16 @@ module.exports.changeVisit = (req, res) => {
 	) {
 		const { token } = req.headers;
 	
-		if(!token) {
+		if (!token) {
 			return res.status(402).send('error in post');
 		}
 		const IdUser = jwt.verify(token, secret).id;
-		if(!IdUser){
+		if (!IdUser) {
 			return res.status(401).send('error in post');
 		}
 		Visit.updateOne(
 			{_id: req.body._id}, req.body).then((result) => {
-				Visit.find({id_user: IdUser}, {id_user:0}).then((result) => {
+				Visit.find({ id_user: IdUser }, { id_user:0 }).then((result) => {
 					res.send({
 						data: result,
 					});
