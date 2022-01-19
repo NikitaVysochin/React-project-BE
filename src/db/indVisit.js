@@ -5,6 +5,7 @@ const regScheme = new Schema({
   doctor: String,
   date: Date,
   complaint: String,
+  id_user: String
 });
 
 module.exports = Visit = mongoose.model("visit", regScheme);
