@@ -62,18 +62,24 @@ module.exports.getUser = (req, res) => {
 }
 
 module.exports.createNewVisit = (req, res) => {
-	const { token } = req.headers;
-	const IdUser = jwt.verify(token, secret).id;
-  
 	if (req.body.hasOwnProperty('name') &&
 			req.body.hasOwnProperty('doctor') &&
 			req.body.hasOwnProperty('date') &&
 			req.body.hasOwnProperty('complaint')
 	) {
+		const { token } = req.headers;
+		const IdUser = jwt.verify(token, secret).id;
+
+		if (!token) {
+			return res.status(402).send('error in post');
+		}
+		if (!IdUser) {
+			return res.status(401).send('error in post');
+		}
 		req.body.id_user = IdUser;
 		const visit = new Visit(req.body);
 		visit.save().then(result => {
-			Visit.find({}, ['name', 'doctor', 'date', 'complaint']).then((result) => {
+			Visit.find({ id_user: IdUser }, ['name', 'doctor', 'date', 'complaint']).then((result) => {
 				res.send({
 					data: result,
 				});
@@ -102,9 +108,18 @@ module.exports.getAllVisits = (req, res) => {
 }
 
 module.exports.deleteVisit = (req, res) => {
+	const { token } = req.headers;
+
+	if (!token) {
+		return res.status(402).send('error in post');
+	}
+	const IdUser = jwt.verify(token, secret).id;
+	if (!IdUser) {
+		return res.status(401).send('error in post');
+	}
 	if (req.query._id) {
 		Visit.deleteOne({_id: req.query._id}).then(result => {
-			Visit.find({}, ['name', 'doctor', 'date', 'complaint']).then((result) => {
+			Visit.find({ id_user: IdUser }, ['name', 'doctor', 'date', 'complaint']).then((result) => {
 				res.send({
 					data: result,
 				});
