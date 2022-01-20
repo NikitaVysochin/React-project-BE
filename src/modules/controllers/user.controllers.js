@@ -73,7 +73,7 @@ module.exports.createNewVisit = (req, res) => {
 		req.body.id_user = IdUser;
 		const visit = new Visit(req.body);
 		visit.save().then(result => {
-			Visit.find().then((result) => {
+			Visit.find({}, ['name', 'doctor', 'date', 'complaint']).then((result) => {
 				res.send({
 					data: result,
 				});
@@ -94,7 +94,7 @@ module.exports.getAllVisits = (req, res) => {
 	if (!IdUser) {
 		return res.status(401).send('error in post');
 	}
-  Visit.find({ id_user: IdUser }, { id_user:0 }).then((result) => {
+  Visit.find({ id_user: IdUser }, ['name', 'doctor', 'date', 'complaint']).then((result) => {
     res.send({
       data: result,
     });
@@ -104,7 +104,7 @@ module.exports.getAllVisits = (req, res) => {
 module.exports.deleteVisit = (req, res) => {
 	if (req.query._id) {
 		Visit.deleteOne({_id: req.query._id}).then(result => {
-			Visit.find().then((result) => {
+			Visit.find({}, ['name', 'doctor', 'date', 'complaint']).then((result) => {
 				res.send({
 					data: result,
 				});
@@ -133,7 +133,7 @@ module.exports.changeVisit = (req, res) => {
 		}
 		Visit.updateOne(
 			{_id: req.body._id}, req.body).then((result) => {
-				Visit.find({ id_user: IdUser }, { id_user:0 }).then((result) => {
+				Visit.find({ id_user: IdUser }, ['name', 'doctor', 'date', 'complaint']).then((result) => {
 					res.send({
 						data: result,
 					});
